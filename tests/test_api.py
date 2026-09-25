@@ -83,3 +83,9 @@ def test_stats_and_managers(client):
     new = client.post("/api/managers", json={"name": "Carla", "telegram_chat_id": "444"}, headers=ADMIN).json()
     off = client.patch(f"/api/managers/{new['id']}", json={"active": False}, headers=ADMIN).json()
     assert off["active"] is False
+
+
+def test_api_times_carry_the_utc_offset(client):
+    lead_id = client.post("/api/leads", json=LEAD, headers=SITE).json()["id"]
+    created_at = client.get(f"/api/leads/{lead_id}", headers=ADMIN).json()["created_at"]
+    assert created_at.endswith(("Z", "+00:00"))
