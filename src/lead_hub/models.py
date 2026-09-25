@@ -7,10 +7,35 @@ from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.types import TypeDecorator
 
 
 def utcnow() -> datetime:
     return datetime.now(UTC)
+
+
+class UTCDateTime(TypeDecorator):
+    """Always timezone-aware UTC, in every database.
+
+    SQLite stores datetimes without an offset and returns them naive, while objects still in the session keep
+    their aware values; mixing the two breaks comparisons and makes the API return ambiguous times.
+    Stored in UTC, returned as UTC, naive input rejected.
+    """
+
+    impl = DateTime(timezone=True)
+    cache_ok = True
+
+    def process_bind_param(self, value: datetime | None, dialect) -> datetime | None:
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            raise ValueError("naive datetime: pass a timezone-aware value")
+        return value.astimezone(UTC)
+
+    def process_result_value(self, value: datetime | None, dialect) -> datetime | None:
+        if value is None:
+            return None
+        return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
 
 
 class Base(DeclarativeBase):
@@ -40,7 +65,7 @@ class Manager(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     telegram_chat_id: Mapped[str | None] = mapped_column(String(32))
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
-    last_assigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_assigned_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
 
     leads: Mapped[list[Lead]] = relationship(back_populates="manager")
 
@@ -67,12 +92,12 @@ class Lead(Base):
     )
     manager_id: Mapped[int | None] = mapped_column(ForeignKey("managers.id"))
     duplicates: Mapped[int] = mapped_column(default=0, nullable=False)  # repeated submissions merged here
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+        UTCDateTime(), default=utcnow, onupdate=utcnow, nullable=False
     )
-    reminded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # SLA reminder sent
-    escalated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # sent to the admin
+    reminded_at: Mapped[datetime | None] = mapped_column(UTCDateTime())  # SLA reminder sent
+    escalated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())  # sent to the admin
 
     manager: Mapped[Manager | None] = relationship(back_populates="leads")
     events: Mapped[list[LeadEvent]] = relationship(
@@ -89,6 +114,6 @@ class LeadEvent(Base):
     lead_id: Mapped[int] = mapped_column(ForeignKey("leads.id", ondelete="CASCADE"), nullable=False, index=True)
     kind: Mapped[str] = mapped_column(String(30), nullable=False)  # created | duplicate | assigned | status | note
     detail: Mapped[str] = mapped_column(Text, default="", nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utcnow, nullable=False)
 
     lead: Mapped[Lead] = relationship(back_populates="events")

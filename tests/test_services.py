@@ -117,3 +117,13 @@ def test_stats_conversion_and_overdue(session, managers):
     assert s.conversion == 0.5
     assert s.overdue == 2
     assert s.by_source == {"landing": 4}
+
+
+def test_datetimes_read_back_from_the_database_are_utc_aware(session, factory):
+    # A fresh session reads straight from SQLite (which drops the offset): values must still be aware UTC.
+    created = intake(session, lead(), NOW, DAY).lead
+    session.commit()
+    with factory() as fresh:
+        loaded = fresh.get(type(created), created.id)
+        assert loaded.created_at == NOW
+        assert loaded.created_at.utcoffset() == timedelta(0)
