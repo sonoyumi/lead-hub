@@ -13,8 +13,9 @@ from pathlib import Path
 from typing import Annotated
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, Query, Response, status
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query, Response, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session, sessionmaker
@@ -29,6 +30,8 @@ from lead_hub.services import ServiceError, intake, list_leads, stats, update_le
 
 logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Declared as a security scheme: the /docs page shows an "Authorize" button for the key.
+API_KEY_HEADER = APIKeyHeader(name="X-Api-Key", auto_error=False)
 
 
 class ManagerIn(BaseModel):
@@ -106,12 +109,12 @@ def create_app(
         # compare_digest: the check takes the same time whether the key is almost right or totally wrong
         return bool(given) and any(hmac.compare_digest(given.encode(), k.encode()) for k in allowed if k)
 
-    def require_intake(x_api_key: Annotated[str | None, Header()] = None) -> None:
+    def require_intake(x_api_key: Annotated[str | None, Security(API_KEY_HEADER)] = None) -> None:
         keys = [k.get_secret_value() for k in settings.intake_keys]
         if not _key_ok(x_api_key, keys):
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid or missing X-Api-Key")
 
-    def require_admin(x_api_key: Annotated[str | None, Header()] = None) -> None:
+    def require_admin(x_api_key: Annotated[str | None, Security(API_KEY_HEADER)] = None) -> None:
         admin = settings.admin_key.get_secret_value()
         if not admin:
             raise HTTPException(status.HTTP_403_FORBIDDEN, "admin API is disabled: set ADMIN_KEY")
