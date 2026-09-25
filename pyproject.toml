@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lead-hub"
+version = "0.1.0"
+description = "Lead intake and automation service: REST API for website forms, de-duplication, round-robin assignment, SLA reminders and escalations, daily Excel digest in Telegram (FastAPI, SQLAlchemy, Alembic)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "Vladyslav Shokun", email = "sonoyumiii@gmail.com" }]
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+    "sqlalchemy>=2.0,<3",
+    "alembic>=1.13,<2",
+    "pydantic>=2.7,<3",
+    "pydantic-settings>=2.7,<3",
+    "apscheduler>=3.10,<4",
+    "httpx>=0.27,<1",
+    "openpyxl>=3.1,<4",
+    "tzdata; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+postgres = ["psycopg[binary]>=3.1,<4"]
+
+[project.urls]
+Repository = "https://github.com/sonoyumi/lead-hub"
+
+[project.scripts]
+lead-hub = "lead_hub.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Header"]

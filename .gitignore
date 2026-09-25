@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Leads contain personal data
+data/
+*.db
+*.db-wal
+*.db-shm
+leads*.xlsx
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
