@@ -90,7 +90,7 @@ lead-hub serve                    # API on http://127.0.0.1:8000, docs on /docs
 
 PostgreSQL: `pip install -e ".[postgres]"` and `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
 
-Tests: `pytest` (30 tests: services, automation with a controllable clock, API via TestClient,
+Tests: `pytest` (32 tests: services, automation with a controllable clock, API via TestClient,
 migrations vs models, CLI).
 
 ### Project structure
@@ -177,7 +177,7 @@ lead-hub serve                    # API su http://127.0.0.1:8000, documentazione
 
 PostgreSQL: `pip install -e ".[postgres]"` e `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
 
-Test: `pytest` (30 test: logica di business, automazione con orologio controllabile, API tramite TestClient,
+Test: `pytest` (32 test: logica di business, automazione con orologio controllabile, API tramite TestClient,
 corrispondenza tra migrazioni e modelli, CLI).
 
 ### Struttura del progetto
@@ -251,7 +251,7 @@ lead-hub serve                    # API на http://127.0.0.1:8000, докуме
 
 PostgreSQL: `pip install -e ".[postgres]"` і `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
 
-Тести: `pytest` (30 тестів: бізнес-логіка, автоматизація з керованим годинником, API через TestClient,
+Тести: `pytest` (32 тестів: бізнес-логіка, автоматизація з керованим годинником, API через TestClient,
 відповідність міграцій моделям, CLI).
 
 ### Структура проєкту
@@ -325,7 +325,7 @@ lead-hub serve                    # API на http://127.0.0.1:8000, докуме
 
 PostgreSQL: `pip install -e ".[postgres]"` и `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
 
-Тесты: `pytest` (30 тестов: бизнес-логика, автоматизация с управляемыми часами, API через TestClient,
+Тесты: `pytest` (32 тестов: бизнес-логика, автоматизация с управляемыми часами, API через TestClient,
 соответствие миграций моделям, CLI).
 
 ### Структура проекта
