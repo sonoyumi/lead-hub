@@ -9,7 +9,7 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
 </p>
 
-**🇬🇧 [English](#en)** · **🇷🇺 [Русский](#ru)**
+**🇬🇧 [English](#en)** · **🇮🇹 [Italiano](#it)** · **🇺🇦 [Українська](#uk)** · **🇷🇺 [Русский](#ru)**
 
 ---
 
@@ -125,11 +125,159 @@ MIT, see [LICENSE](LICENSE).
 
 ---
 
+<a name="it"></a>
+
+## 🇮🇹 Italiano
+
+**[🇬🇧 English](#en)** · **🇮🇹 Italiano** · **[🇺🇦 Українська](#uk)** · **[🇷🇺 Русский](#ru)**
+
+Un piccolo backend per la gestione dei contatti (lead) per le attività che ricevono richieste da siti web e landing page.
+I moduli inviano i lead a una REST API; il servizio elimina i duplicati, assegna ogni lead a un commerciale,
+lo avvisa su Telegram, invia un promemoria e un'escalation se nessuno prende in carico il lead e manda
+un riepilogo giornaliero con un file Excel. Un'API di gestione fornisce l'elenco dei lead, gli stati e le statistiche di conversione.
+
+### Cosa automatizza
+
+Lo schema è nella sezione inglese qui sopra. In breve: modulo → controllo e normalizzazione di telefono/email →
+unione di una nuova richiesta della stessa persona entro 24 ore → assegnazione a rotazione del commerciale → 🆕 notifica →
+⏰ promemoria se non preso in carico entro lo SLA → 🚨 escalation al responsabile dopo 2×SLA → 📊 riepilogo giornaliero con Excel.
+
+### Funzionalità
+
+- **REST API (FastAPI):** ricezione dei lead dai moduli (una chiave per ogni sito), API di amministrazione per lead, stati,
+  commerciali e statistiche; documentazione interattiva su `/docs`.
+- **Database (SQLAlchemy 2.0):** SQLite di default, PostgreSQL cambiando una sola impostazione;
+  **migrazioni Alembic**: un test verifica che le migrazioni corrispondano esattamente ai modelli.
+- **Duplicati:** lo stesso telefono o email entro 24 ore (configurabile) viene unito al primo lead;
+  i numeri di telefono vengono normalizzati (`+39 (333) 123-45-67` = `393331234567`).
+- **Stati** con transizioni consentite (`new → in_progress → won/lost`, riapertura possibile)
+  e **storico** completo (creato, duplicato, assegnato, stato, nota, promemoria, escalation).
+- **Automazione (APScheduler):** controllo dello SLA ogni minuto, riepilogo all'ora locale impostata.
+  Un invio Telegram fallito viene ritentato al giro successivo, non va perso.
+- **Sicurezza:** chiavi confrontate in tempo costante, API di amministrazione disattivata senza `ADMIN_KEY`,
+  segreti mai stampati (`SecretStr`), il testo dei moduli viene escapato in Telegram e resta testo in Excel.
+- **CLI:** `lead-hub db upgrade`, `serve`, `managers add/list/enable/disable`, `export`, `digest`, `sla`.
+
+### API
+
+La tabella degli endpoint e un esempio di richiesta sono nella sezione inglese. La chiave va nell'header `X-Api-Key`.
+
+### Avvio rapido
+
+```bash
+git clone https://github.com/sonoyumi/lead-hub.git
+cd lead-hub
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env              # INTAKE_KEYS, ADMIN_KEY, facoltativi BOT_TOKEN e ADMIN_CHAT_ID
+lead-hub db upgrade               # crea le tabelle (migrazioni Alembic)
+lead-hub managers add "Anna" --chat 123456789
+lead-hub serve                    # API su http://127.0.0.1:8000, documentazione su /docs
+```
+
+PostgreSQL: `pip install -e ".[postgres]"` e `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
+
+Test: `pytest` (30 test: logica di business, automazione con orologio controllabile, API tramite TestClient,
+corrispondenza tra migrazioni e modelli, CLI).
+
+### Struttura del progetto
+
+Vedi la sezione inglese.
+
+### Autore
+
+**Vladyslav Shokun** ([@sonoyumi](https://github.com/sonoyumi)), sviluppatore Python: bot Telegram, web scraping, automazione.
+
+[![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
+[![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+
+> 💼 Perdi contatti tra il sito e i tuoi commerciali? Scrivimi.
+
+### Licenza
+
+MIT, vedi [LICENSE](LICENSE).
+
+---
+
+<a name="uk"></a>
+
+## 🇺🇦 Українська
+
+**[🇬🇧 English](#en)** · **[🇮🇹 Italiano](#it)** · **🇺🇦 Українська** · **[🇷🇺 Русский](#ru)**
+
+Невеликий бекенд для роботи із заявками для бізнесу, який отримує запити із сайтів і лендингів.
+Форми надсилають заявки в REST API; сервіс прибирає дублі, призначає менеджера, сповіщає його в Telegram,
+нагадує та ескалює, якщо заявку ніхто не взяв, і надсилає щоденне зведення з Excel-файлом.
+Адмін-API дає список заявок, статуси та статистику конверсії.
+
+### Що автоматизує
+
+Схема — в англійському розділі вище. Коротко: форма → перевірка й нормалізація телефону/пошти →
+об'єднання повторної заявки тієї самої людини за 24 години → призначення менеджера по колу → 🆕 сповіщення йому →
+⏰ нагадування, якщо не взяв за SLA → 🚨 ескалація керівнику після 2×SLA → 📊 щоденне зведення з Excel.
+
+### Можливості
+
+- **REST API (FastAPI):** прийом заявок із форм (свій ключ для кожного сайту), адмін-API для заявок, статусів,
+  менеджерів і статистики; інтерактивна документація на `/docs`.
+- **База даних (SQLAlchemy 2.0):** SQLite за замовчуванням, PostgreSQL — зміною одного налаштування;
+  **міграції Alembic** — тест перевіряє, що міграції точно збігаються з моделями.
+- **Дублі:** той самий телефон або email за 24 години (налаштовується) об'єднується з першою заявкою;
+  телефони нормалізуються (`+39 (333) 123-45-67` = `393331234567`).
+- **Статуси** з допустимими переходами (`new → in_progress → won/lost`, можна перевідкрити)
+  і повна **історія** (створена, повтор, призначена, статус, нотатка, нагадування, ескалація).
+- **Автоматизація (APScheduler):** перевірка SLA щохвилини, зведення в заданий час за місцевим часом.
+  Невдале надсилання в Telegram повторюється під час наступного запуску, а не губиться.
+- **Безпека:** ключі порівнюються за сталий час, адмін-API вимкнений без `ADMIN_KEY`,
+  секрети не друкуються (`SecretStr`), текст із форм екранується в Telegram і залишається текстом в Excel.
+- **CLI:** `lead-hub db upgrade`, `serve`, `managers add/list/enable/disable`, `export`, `digest`, `sla`.
+
+### API
+
+Таблиця ендпоінтів і приклад запиту — в англійському розділі. Ключ передається в заголовку `X-Api-Key`.
+
+### Швидкий старт
+
+```bash
+git clone https://github.com/sonoyumi/lead-hub.git
+cd lead-hub
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env              # INTAKE_KEYS, ADMIN_KEY, за бажанням BOT_TOKEN і ADMIN_CHAT_ID
+lead-hub db upgrade               # створити таблиці (міграції Alembic)
+lead-hub managers add "Анна" --chat 123456789
+lead-hub serve                    # API на http://127.0.0.1:8000, документація на /docs
+```
+
+PostgreSQL: `pip install -e ".[postgres]"` і `DATABASE_URL=postgresql+psycopg://user:pass@host/leads`.
+
+Тести: `pytest` (30 тестів: бізнес-логіка, автоматизація з керованим годинником, API через TestClient,
+відповідність міграцій моделям, CLI).
+
+### Структура проєкту
+
+Див. англійський розділ.
+
+### Автор
+
+**Vladyslav Shokun** ([@sonoyumi](https://github.com/sonoyumi)) — Python-розробник: Telegram-боти, парсинг, автоматизація.
+
+[![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
+[![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+
+> 💼 Заявки губляться між сайтом і менеджерами? Напишіть мені.
+
+### Ліцензія
+
+MIT — див. [LICENSE](LICENSE).
+
+---
+
 <a name="ru"></a>
 
 ## 🇷🇺 Русский
 
-**[🇬🇧 English](#en)** · **🇷🇺 Русский**
+**[🇬🇧 English](#en)** · **[🇮🇹 Italiano](#it)** · **[🇺🇦 Українська](#uk)** · **🇷🇺 Русский**
 
 Небольшой бэкенд для работы с заявками для бизнеса, который получает запросы с сайтов и лендингов.
 Формы отправляют заявки в REST API; сервис убирает дубли, назначает менеджера, уведомляет его в Telegram,
