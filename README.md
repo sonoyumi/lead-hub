@@ -116,6 +116,7 @@ migrations/      # Alembic
 
 [![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
 [![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-profile-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vladyslav-shokun/)
 
 > 💼 Losing leads between the website and your managers? Get in touch.
 
@@ -190,6 +191,7 @@ Vedi la sezione inglese.
 
 [![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
 [![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-profile-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vladyslav-shokun/)
 
 > 💼 Perdi contatti tra il sito e i tuoi commerciali? Scrivimi.
 
@@ -264,6 +266,7 @@ PostgreSQL: `pip install -e ".[postgres]"` і `DATABASE_URL=postgresql+psycopg:/
 
 [![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
 [![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-profile-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vladyslav-shokun/)
 
 > 💼 Заявки губляться між сайтом і менеджерами? Напишіть мені.
 
@@ -338,6 +341,7 @@ PostgreSQL: `pip install -e ".[postgres]"` и `DATABASE_URL=postgresql+psycopg:/
 
 [![Telegram](https://img.shields.io/badge/Telegram-write%20me-2CA5E0?logo=telegram&logoColor=white)](https://t.me/sonoyumiii)
 [![Email](https://img.shields.io/badge/Email-contact-EA4335?logo=gmail&logoColor=white)](mailto:sonoyumiii@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-profile-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vladyslav-shokun/)
 
 > 💼 Заявки теряются между сайтом и менеджерами? Напишите мне.
 
